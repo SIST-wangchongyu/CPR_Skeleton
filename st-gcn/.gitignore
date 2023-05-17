@@ -11,7 +11,7 @@ model/*
 *.caffemodel
 cache/
 kinetics-skeleton/
-resource/Processed_Data/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

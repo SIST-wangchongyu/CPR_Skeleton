@@ -19,7 +19,7 @@ model_args:
   num_class: 5
   edge_importance_weighting: True
   graph_args:
-    layout: 'openpose'
+    layout: 'cpr_skeleton'
     strategy: 'spatial'
 
 # training

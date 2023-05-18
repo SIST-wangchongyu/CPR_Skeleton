@@ -72,6 +72,16 @@ class Graph():
             self.center = 2
         # elif layout=='customer settings'
         #     pass
+        elif layout == 'cpr_skeleton':
+            self.num_node = 13
+            self_link = [(i, i) for i in range(self.num_node)]
+            neighbor_1base = [(1, 3), (3, 5), (3, 7), (3, 9), (5, 7),
+                              (0, 2), (2, 4), (4, 6), (4, 8), (4, 10),
+                              (6, 8), (0, 12), (11, 12)]
+
+            neighbor_link = [(i - 1, j - 1) for (i, j) in neighbor_1base]
+            self.edge = self_link + neighbor_link
+            self.center = 12
         else:
             raise ValueError("Do Not Exist This Layout.")
 

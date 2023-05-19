@@ -183,7 +183,7 @@ class DemoOffline(IO):
                             type=int,
                             help='height of frame in the output video.')
         parser.set_defaults(
-            config='./config/st_gcn/kinetics-skeleton/demo_offline.yaml')
+            config='./config/st_gcn/kinetics-skeleton_CPR/demo_offline.yaml')
         parser.set_defaults(print_log=False)
         # endregion yapf: enable
 

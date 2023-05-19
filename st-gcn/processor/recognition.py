@@ -14,9 +14,9 @@ import torch.optim as optim
 sys.path.append("..")
 
 import torchlight
-from ..torchlight.torchlight import str2bool
-from ..torchlight.torchlight import DictAction
-from ..torchlight.torchlight import import_class
+from torchlight import str2bool
+from torchlight import DictAction
+from torchlight import import_class
 
 from .processor import Processor
 

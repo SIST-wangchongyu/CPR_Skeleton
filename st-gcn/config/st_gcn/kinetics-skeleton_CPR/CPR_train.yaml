@@ -1,7 +1,7 @@
 work_dir: ./work_dir/recognition/kinetics_skeleton/ST_GCN
 
 # feeder
-feeder: feeder.Feeder_CPR.Feeder_CPR
+feeder: feeder.feeder.Feeder
 train_feeder_args:
   random_choose: True
   random_move: True
@@ -23,7 +23,7 @@ model_args:
     strategy: 'spatial'
 
 # training
-device: [0,1,2,3]
+device: [0]
 batch_size: 256
 test_batch_size: 256
 

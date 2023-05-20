@@ -11,12 +11,14 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 from torchvision import datasets, transforms
-
+from tqdm import tqdm
 # visualization
 import time
 
 # operation
+# import tools
 from . import tools
+
 
 class Feeder(torch.utils.data.Dataset):
     """ Feeder for skeleton-based action recognition
@@ -37,7 +39,7 @@ class Feeder(torch.utils.data.Dataset):
                  random_move=False,
                  window_size=-1,
                  debug=False,
-                 mmap=True):
+                 mmap=False):
         self.debug = debug
         self.data_path = data_path
         self.label_path = label_path
@@ -51,15 +53,13 @@ class Feeder(torch.utils.data.Dataset):
         # data: N C V T M
 
         # load label
-        with open(self.label_path, 'rb') as f:
-            self.sample_name, self.label = pickle.load(f)
+        print(self.label_path)
+        self.label = np.load(self.label_path)
 
         # load data
-        if mmap:
-            self.data = np.load(self.data_path, mmap_mode='r')
-        else:
-            self.data = np.load(self.data_path)
-            
+
+        self.data = np.load(self.data_path)
+
         if self.debug:
             self.label = self.label[0:100]
             self.data = self.data[0:100]
@@ -74,7 +74,7 @@ class Feeder(torch.utils.data.Dataset):
         # get data
         data_numpy = np.array(self.data[index])
         label = self.label[index]
-        
+
         # processing
         if self.random_choose:
             data_numpy = tools.random_choose(data_numpy, self.window_size)
@@ -82,5 +82,25 @@ class Feeder(torch.utils.data.Dataset):
             data_numpy = tools.auto_pading(data_numpy, self.window_size)
         if self.random_move:
             data_numpy = tools.random_move(data_numpy)
+        # print(data_numpy.shape)
+        # print(label.shape)
+        return data_numpy.astype(np.float32), label
 
-        return data_numpy, label
+def feeder_data_generator(dataset, batch_size):
+
+        data_loader = torch.utils.data.DataLoader(dataset, shuffle=True, batch_size=batch_size,
+                                                      num_workers=2,
+                                                      pin_memory=True)
+        return data_loader
+if __name__ == '__main__':
+    data_path = '/public/home/wangchy5/CPR/st-gcn/resource/Processed_Data/train.npy'
+    label_path = '/public/home/wangchy5/CPR/st-gcn/resource/Processed_Data/train_label.npy'
+    skeleton = Feeder(data_path,label_path)
+    data_loader = torch.utils.data.DataLoader(skeleton, batch_size=1,
+                                                  pin_memory=True)
+    process =tqdm(data_loader)
+    for batch_idx, (data, target) in enumerate(process):
+        print(data)
+        print(target)
+
+

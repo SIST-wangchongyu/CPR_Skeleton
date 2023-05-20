@@ -187,7 +187,7 @@ class DemoRealtime(IO):
                             type=int,
                             help='height of frame in the output video.')
         parser.set_defaults(
-            config='./config/st_gcn/kinetics-skeleton/demo_realtime.yaml')
+            config='./config/st_gcn/kinetics-skeleton_CPR/demo_realtime.yaml')
         parser.set_defaults(print_log=False)
         # endregion yapf: enable
 

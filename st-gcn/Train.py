@@ -56,7 +56,7 @@ root = './data/mnist'
 
 
 
-epochs =20
+epochs =30
 lr = 2e-3
 batch_size = 32
 in_channels =3
@@ -67,7 +67,7 @@ graph_args = {
     'strategy': 'spatial'
 }
 
-writer = SummaryWriter('/public/home/wangchy5/CPR/Skeleton/CPR_Skeleton/st-gcn/Record/st_gcn')
+writer = SummaryWriter('/public/home/wangchy5/CPR/Skeleton/CPR_Skeleton/st-gcn/Record/st_gcn_30epoch_2e-3')
 print(args)
 
 #optical flow
@@ -86,9 +86,9 @@ test_label_root ='/public/home/wangchy5/CPR/Skeleton/CPR_Skeleton/st-gcn/resourc
 
 
 train_dataset = Feeder(train_data_root,train_label_root)
-train_data_loader = feeder_data_generator(train_dataset,batch_size=batch_size)
+train_data_loader = feeder_data_generator(train_dataset,batch_size=batch_size,sampler=1)
 test_dataset  = Feeder(test_data_root,test_label_root)
-test_data_loader = feeder_data_generator(test_dataset,batch_size=batch_size)
+test_data_loader = feeder_data_generator(test_dataset,batch_size=batch_size,sampler=0)
 device_count = torch.cuda.device_count()
 # print(train_dataset.reweighting)
 # sum_weight =0
@@ -264,11 +264,11 @@ if __name__ == "__main__":
         train(epoch)
         if epoch % 2 == 0:
             test(epoch)
-        if epoch % 5 == 0:
+        if epoch % 10 == 0:
             lr /= 5
             for param_group in optimizer.param_groups:
                 param_group['lr'] = lr
-    # torch.save(model.state_dict(), '/public/home/wangchy5/CPR/R3d/weight/R3d_20epochs_3fc_finetune_head_2e-4')
+    torch.save(model.state_dict(), '/public/home/wangchy5/CPR/Skeleton/CPR_Skeleton/st-gcn/weight/st_gcn_30epoch_2e-3')
     # checkpoint  = torch.load('/public/home/wangchy5/CPR/R3d/weight/R3d_30epochs_3fc_finetune')
     # # print(checkpoint)
     # model.load_state_dict(checkpoint)

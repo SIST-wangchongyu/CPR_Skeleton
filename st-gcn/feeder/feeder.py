@@ -12,6 +12,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torchvision import datasets, transforms
 from tqdm import tqdm
+from torch.utils.data import DataLoader, WeightedRandomSampler, Dataset
 # visualization
 import time
 
@@ -48,6 +49,11 @@ class Feeder(torch.utils.data.Dataset):
         self.window_size = window_size
 
         self.load_data(mmap)
+        self.class_sample_count = np.unique(self.label, return_counts=True)[1]
+        self.weight = 1. / self.class_sample_count
+        self.samples_weight = self.weight[self.label]
+        print(self.samples_weight)
+        self.sampler = WeightedRandomSampler(self.samples_weight, len(self.label))
 
     def load_data(self, mmap):
         # data: N C V T M
@@ -86,12 +92,17 @@ class Feeder(torch.utils.data.Dataset):
         # print(label.shape)
         return data_numpy.astype(np.float32), label
 
-def feeder_data_generator(dataset, batch_size):
-
+def feeder_data_generator(dataset, batch_size,sampler):
+    if sampler == 1:
+        data_loader = torch.utils.data.DataLoader(dataset, sampler=dataset.sampler, batch_size=batch_size,
+                                                  num_workers=2,
+                                                  pin_memory=True)
+    else:
         data_loader = torch.utils.data.DataLoader(dataset, shuffle=True, batch_size=batch_size,
-                                                      num_workers=2,
-                                                      pin_memory=True)
-        return data_loader
+                                                  num_workers=2,
+                                                  pin_memory=True)
+
+    return data_loader
 if __name__ == '__main__':
     data_path = '/public/home/wangchy5/CPR/st-gcn/resource/Processed_Data/train.npy'
     label_path = '/public/home/wangchy5/CPR/st-gcn/resource/Processed_Data/train_label.npy'
